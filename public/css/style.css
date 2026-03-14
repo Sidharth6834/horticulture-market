@@ -1,0 +1,263 @@
+:root {
+    --primary-color: #2E7D32; /* Rich Green */
+    --primary-light: #4CAF50;
+    --primary-dark: #1B5E20;
+    --accent-color: #F9A825; /* Earthy Yellow */
+    --text-main: #2d3748;
+    --text-muted: #718096;
+    --bg-main: #f0fdf4; /* Very light green tinted background */
+    --bg-card: #ffffff;
+    --white: #ffffff;
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Typography Helpers */
+.text-primary { color: var(--primary-color); }
+.text-accent { color: var(--accent-color); }
+
+/* Glassmorphism Classes */
+.gloss {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+}
+.gloss-hover {
+    background: var(--white);
+    border: 1px solid transparent;
+    transition: var(--transition);
+}
+.gloss-hover:hover {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 16px 32px 0 rgba(46, 125, 50, 0.15);
+    transform: translateY(-5px);
+}
+
+/* Navbar */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 5%;
+    z-index: 1000;
+}
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary-dark);
+}
+.nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: 600;
+    transition: color 0.3s;
+}
+.nav-links a:hover, .nav-links a.active {
+    color: var(--primary-color);
+}
+.hamburger {
+    display: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--primary-dark);
+}
+
+/* Buttons */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+}
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+    color: var(--white) !important;
+    box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
+}
+.btn-secondary {
+    background: var(--white);
+    color: var(--primary-dark) !important;
+    border: 2px solid var(--primary-color) !important;
+}
+.btn-secondary:hover {
+    background: var(--primary-light);
+    color: var(--white) !important;
+}
+
+/* Hero Section */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5%;
+    background: url('https://images.unsplash.com/photo-1592982537447-6f2b6a0a0fb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+    position: relative;
+    padding-top: 80px;
+}
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+}
+.hero-content {
+    position: relative;
+    max-width: 800px;
+    padding: 3rem;
+    border-radius: 20px;
+    text-align: center;
+    animation: fadeIn 1s ease-out;
+}
+.hero-content h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.hero-content p {
+    font-size: 1.2rem;
+    color: var(--text-main);
+    margin-bottom: 2rem;
+}
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+/* Features */
+.features-section {
+    padding: 5rem 5%;
+}
+.section-title {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+.section-title h2 {
+    font-size: 2.5rem;
+    color: var(--primary-dark);
+    margin-bottom: 0.5rem;
+}
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+.feature-card {
+    padding: 2rem;
+    border-radius: 16px;
+    text-align: center;
+}
+.icon-wrapper {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem auto;
+    color: var(--primary-color);
+    font-size: 1.8rem;
+}
+.feature-card h3 {
+    margin-bottom: 1rem;
+    color: var(--primary-dark);
+}
+
+/* Footer */
+footer {
+    background: var(--primary-dark);
+    color: var(--white);
+    padding: 2rem 5%;
+    text-align: center;
+}
+.footer-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* Forms & Shared Utils */
+.form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+.form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #cbd5e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none; /* In a real app, toggle with JS */
+    }
+    .hamburger { display: block; }
+    .hero-content h1 { font-size: 2.5rem; }
+    .hero-buttons { flex-direction: column; }
+}

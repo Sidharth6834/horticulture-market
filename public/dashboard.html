@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard - AgriSmart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 70px; /* offset navbar */
+        }
+        .sidebar {
+            width: 250px;
+            background: var(--white);
+            border-right: 1px solid #e2e8f0;
+            padding: 2rem 1rem;
+            position: fixed;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+        }
+        .sidebar-menu {
+            list-style: none;
+        }
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            color: var(--text-main);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: var(--transition);
+            margin-bottom: 0.5rem;
+        }
+        .sidebar-menu li a:hover, .sidebar-menu li a.active {
+            background: var(--primary-light);
+            color: var(--white);
+        }
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 2rem 5%;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        /* Weather Widget */
+        .weather-widget {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .weather-info h3 { font-size: 2rem; font-weight: 700; }
+        .weather-icon { font-size: 3rem; }
+        
+        .card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #edf2f7;
+            padding-bottom: 1rem;
+        }
+        .card-header h3 { color: var(--primary-dark); }
+        
+        table { width: 100%; border-collapse: collapse; }
+        table th, table td { padding: 1rem; text-align: left; border-bottom: 1px solid #edf2f7; }
+        table th { color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; }
+        
+        /* Value Addition Cards */
+        .va-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .va-card {
+            background: #fff8e1;
+            border: 1px solid #ffecb3;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .va-card h4 { color: #f57f17; margin-bottom: 0.5rem; }
+
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); z-index: 1000; }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar gloss">
+        <div class="logo">
+            <i class="fa-solid fa-leaf text-primary"></i>
+            <span>AgriSmart</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li id="logout-container"></li>
+        </ul>
+        <div class="hamburger" id="dash-hamburger">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" data-target="overview"><i class="fa-solid fa-house"></i> Overview</a></li>
+                <li><a href="#" data-target="market"><i class="fa-solid fa-indian-rupee-sign"></i> Crop Prices</a></li>
+                <li><a href="#" data-target="weather"><i class="fa-solid fa-cloud-sun"></i> Weather</a></li>
+                <li><a href="#" data-target="storage"><i class="fa-solid fa-warehouse"></i> Storage Finder</a></li>
+                <li><a href="#" data-target="demand"><i class="fa-solid fa-chart-line"></i> Demand Prediction</a></li>
+                <li><a href="#" data-target="value-addition"><i class="fa-solid fa-box-open"></i> Value Addition</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div id="overview" class="view-section">
+                <h2 style="margin-bottom: 2rem; color: var(--primary-dark);">Welcome back, <span id="user-name">Farmer</span>!</h2>
+                
+                <div class="dashboard-grid">
+                    <div class="weather-widget card">
+                        <div class="weather-info">
+                            <h3 id="w-temp">--°C</h3>
+                            <p id="w-loc">Loading...</p>
+                            <p id="w-desc" style="text-transform: capitalize;">--</p>
+                        </div>
+                        <div class="weather-icon">
+                            <i class="fa-solid fa-sun" id="w-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Trending Market Prices</h3>
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Crop</th>
+                                        <th>Market</th>
+                                        <th>Price/Kg (₹)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="trending-prices-body">
+                                    <tr><td colspan="3">Loading data...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Demand Trends Overview</h3>
+                    </div>
+                    <div>
+                        <canvas id="demandChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other views hidden by default. Real implementation would swap content dynamically. -->
+            <div id="market" class="view-section" style="display: none;">
+                <h2 style="margin-bottom: 2rem; color: var(--primary-dark);">Comprehensive Market Prices</h2>
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Crop</th>
+                                <th>Category</th>
+                                <th>Market Location</th>
+                                <th>Price/Kg (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="all-prices-body">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="storage" class="view-section" style="display: none;">
+                <h2 style="margin-bottom: 2rem; color: var(--primary-dark);">Nearby Storage Centers</h2>
+                <div class="dashboard-grid" id="storage-grid">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+
+            <div id="value-addition" class="view-section" style="display: none;">
+                <h2 style="margin-bottom: 2rem; color: var(--primary-dark);">Value Addition Ideas</h2>
+                <div class="va-grid" id="va-grid">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+
+            <!-- Demand section -->
+            <div id="demand" class="view-section" style="display: none;">
+                <h2 style="margin-bottom: 2rem; color: var(--primary-dark);">Demand Predictions</h2>
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Crop</th>
+                                <th>Current Demand</th>
+                                <th>Predicted Demand</th>
+                            </tr>
+                        </thead>
+                        <tbody id="demand-table-body">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Fallback sections if needed -->
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

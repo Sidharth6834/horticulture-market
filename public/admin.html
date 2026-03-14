@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - AgriSmart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .dashboard-container { display: flex; min-height: 100vh; padding-top: 70px; }
+        .sidebar {
+            width: 250px; background: var(--white); border-right: 1px solid #e2e8f0;
+            padding: 2rem 1rem; position: fixed; height: calc(100vh - 70px); overflow-y: auto;
+        }
+        .sidebar-menu { list-style: none; }
+        .sidebar-menu li a {
+            display: flex; align-items: center; gap: 1rem; padding: 1rem; color: var(--text-main);
+            text-decoration: none; border-radius: 8px; font-weight: 500; transition: var(--transition);
+            margin-bottom: 0.5rem;
+        }
+        .sidebar-menu li a:hover, .sidebar-menu li a.active {
+            background: #2b6cb0; /* Different color for admin sidebar */
+            color: var(--white);
+        }
+        .main-content { flex: 1; margin-left: 250px; padding: 2rem 5%; }
+        
+        .card { background: var(--white); padding: 2rem; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid #edf2f7; padding-bottom: 1rem; }
+        .card-header h3 { color: #2b6cb0; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        table th, table td { padding: 1rem; text-align: left; border-bottom: 1px solid #edf2f7; }
+        table th { color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); z-index: 1000; }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; padding: 1rem; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar gloss">
+        <div class="logo">
+            <i class="fa-solid fa-user-shield" style="color:#2b6cb0;"></i>
+            <span style="color:#2b6cb0;">AgriSmart Admin</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li id="logout-container"></li>
+        </ul>
+        <div class="hamburger" id="dash-hamburger">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" data-target="manage-crops"><i class="fa-solid fa-seedling"></i> Manage Crops</a></li>
+                <li><a href="#" data-target="manage-prices"><i class="fa-solid fa-tags"></i> Market Prices</a></li>
+                <li><a href="#" data-target="manage-storage"><i class="fa-solid fa-warehouse"></i> Storage Centers</a></li>
+                <li><a href="#" data-target="manage-demand"><i class="fa-solid fa-chart-line"></i> Demand Data</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <!-- Manage Crops -->
+            <div id="manage-crops" class="view-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Add New Crop</h3>
+                    </div>
+                    <form id="add-crop-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Crop Name</label>
+                                <input type="text" id="crop-name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Category</label>
+                                <input type="text" id="crop-category" class="form-control" placeholder="e.g., Vegetable, Fruit" required>
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label>Value Addition Ideas (comma separated)</label>
+                                <input type="text" id="crop-ideas" class="form-control" placeholder="e.g., Tomato paste, Tomato ketchup">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="background: #2b6cb0;">Add Crop</button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header"><h3>Existing Crops</h3></div>
+                    <table>
+                        <thead><tr><th>Name</th><th>Category</th><th>Ideas</th></tr></thead>
+                        <tbody id="crops-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Manage Prices -->
+            <div id="manage-prices" class="view-section" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Update Market Price</h3>
+                    </div>
+                    <form id="add-price-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Select Crop</label>
+                                <select id="price-crop-id" class="form-control" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Market Location</label>
+                                <input type="text" id="price-location" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Price per Kg (₹)</label>
+                                <input type="number" id="price-amount" class="form-control" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="background: #2b6cb0;">Update Price</button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header"><h3>Recent Price Updates</h3></div>
+                    <table>
+                        <thead><tr><th>Date</th><th>Crop</th><th>Market</th><th>Price/Kg</th></tr></thead>
+                        <tbody id="prices-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Manage Storage -->
+            <div id="manage-storage" class="view-section" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Add Storage Facility</h3>
+                    </div>
+                    <form id="add-storage-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Facility Name</label>
+                                <input type="text" id="storage-name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Type</label>
+                                <select id="storage-type" class="form-control" required>
+                                    <option value="Cold Storage">Cold Storage</option>
+                                    <option value="Warehouse">Warehouse</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Location</label>
+                                <input type="text" id="storage-location" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Capacity (e.g., 500 MT)</label>
+                                <input type="text" id="storage-capacity" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Contact Info</label>
+                                <input type="text" id="storage-contact" class="form-control" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="background: #2b6cb0;">Add Facility</button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header"><h3>Facilities Directory</h3></div>
+                    <table>
+                        <thead><tr><th>Name</th><th>Type</th><th>Location</th><th>Capacity</th></tr></thead>
+                        <tbody id="storage-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Manage Demand -->
+            <div id="manage-demand" class="view-section" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Predict Demand</h3>
+                    </div>
+                    <form id="add-demand-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Select Crop</label>
+                                <select id="demand-crop-id" class="form-control" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Current Demand</label>
+                                <select id="demand-current" class="form-control" required>
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Predicted Demand (Next Week)</label>
+                                <select id="demand-predicted" class="form-control" required>
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="background: #2b6cb0;">Submit Prediction</button>
+                    </form>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
