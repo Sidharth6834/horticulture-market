@@ -1,159 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Smart Horticulture Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .auth-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            background: url('https://images.unsplash.com/photo-1592982537447-6f2b6a0a0fb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
-            position: relative;
-        }
-        .auth-container::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-        }
-        .auth-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            padding: 3rem;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 450px;
-            position: relative;
-            box-shadow: 0 16px 40px rgba(0,0,0,0.2);
-        }
-        .auth-card h2 {
-            text-align: center;
-            color: var(--primary-dark);
-            margin-bottom: 2rem;
-            font-size: 2rem;
-        }
-        .error-msg {
-            color: #e53e3e;
-            text-align: center;
-            margin-bottom: 1rem;
-            display: none;
-        }
-        .switch-auth {
-            text-align: center;
-            margin-top: 1.5rem;
-            font-weight: 500;
-        }
-        .switch-auth a {
-            color: var(--primary-color);
-            text-decoration: none;
-            cursor: pointer;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Smart Horticulture Platform</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+.auth-container{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:2rem;
+background:url('https://images.unsplash.com/photo-1592982537447-6f2b6a0a0fb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+position:relative;
+}
+
+.auth-container::before{
+content:'';
+position:absolute;
+top:0;left:0;right:0;bottom:0;
+background:rgba(0,0,0,0.5);
+}
+
+.auth-card{
+background:var(--glass-bg);
+backdrop-filter:blur(20px);
+padding:3rem;
+border-radius:20px;
+width:100%;
+max-width:450px;
+position:relative;
+box-shadow:0 16px 40px rgba(0,0,0,0.2);
+}
+
+.auth-card h2{
+text-align:center;
+color:var(--primary-dark);
+margin-bottom:2rem;
+font-size:2rem;
+}
+
+.error-msg{
+color:#e53e3e;
+text-align:center;
+margin-bottom:1rem;
+display:none;
+}
+
+.switch-auth{
+text-align:center;
+margin-top:1.5rem;
+font-weight:500;
+}
+
+.switch-auth a{
+color:var(--primary-color);
+text-decoration:none;
+cursor:pointer;
+}
+</style>
 </head>
+
 <body>
-    <div class="auth-container">
-        <!-- Render Home link floating top left -->
-        <a href="index.html" class="btn btn-secondary gloss" style="position: absolute; top: 20px; left: 20px; z-index: 10;">
-            <i class="fa-solid fa-arrow-left"></i> Back to Home
-        </a>
-        <div class="auth-card gloss">
-            <h2 id="auth-title">Login</h2>
-            <div id="error-msg" class="error-msg"></div>
-            
-            <form id="auth-form">
-                <div class="form-group" id="name-group" style="display: none;">
-                    <label for="name">Full Name</label>
-                    <input type="text" id="name" class="form-control" placeholder="Enter your name">
-                </div>
-                <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="text" id="phone" class="form-control" required placeholder="Enter your phone number">
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" class="form-control" required placeholder="Enter your password">
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Submit</button>
-            </form>
-            
-            <div class="switch-auth">
-                <span id="auth-toggle-text">Don't have an account? <a onclick="toggleAuthMode()">Register</a></span>
-            </div>
-            <!-- Mock Admin Login for Demo purposes -->
-            <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ddd; text-align: center; font-size: 0.9rem;">
-                <p>Or log in as <a href="#" id="demo-admin">Demo Admin</a></p>
-            </div>
-        </div>
-    </div>
 
-    <!-- Make sure script is included before inline scripts -->
-    <script src="js/app.js"></script>
-    <script>
-        let isLogin = true;
+<div class="auth-container">
 
-        function toggleAuthMode() {
-            isLogin = !isLogin;
-            document.getElementById('auth-title').innerText = isLogin ? 'Login' : 'Register';
-            document.getElementById('name-group').style.display = isLogin ? 'none' : 'block';
-            document.getElementById('auth-toggle-text').innerHTML = isLogin 
-                ? `Don't have an account? <a onclick="toggleAuthMode()">Register</a>` 
-                : `Already have an account? <a onclick="toggleAuthMode()">Login</a>`;
-            document.getElementById('error-msg').style.display = 'none';
-        }
+<a href="index.html" class="btn btn-secondary gloss" style="position:absolute;top:20px;left:20px;z-index:10;">
+<i class="fa-solid fa-arrow-left"></i> Back to Home
+</a>
 
-        document.getElementById('auth-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const phone = document.getElementById('phone').value;
-            const password = document.getElementById('password').value;
-            const name = document.getElementById('name').value;
-            
-            const endpoint = isLogin ? '/auth/login' : '/auth/register';
-            const body = isLogin ? { phone, password } : { name, phone, password, role: 'farmer' };
+<div class="auth-card gloss">
 
-            try {
-                const data = await apiCall(endpoint, 'POST', body);
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('user', JSON.stringify(data.user));
-                localStorage.setItem('role', data.user.role);
-                
-                window.location.href = data.user.role === 'admin' ? 'admin.html' : 'dashboard.html';
-            } catch (err) {
-                const el = document.getElementById('error-msg');
-                el.textContent = err.message;
-                el.style.display = 'block';
-            }
-        });
+<h2 id="auth-title">Login</h2>
 
-        // Demo Admin Login (Creates admin and logs in directly if not exists)
-        document.getElementById('demo-admin').addEventListener('click', async (e) => {
-            e.preventDefault();
-            try {
-                // Try logging in admin
-                try {
-                    const data = await apiCall('/auth/login', 'POST', { phone: 'admin', password: 'admin' });
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    localStorage.setItem('role', data.user.role);
-                    window.location.href = 'admin.html';
-                } catch (err) {
-                    // Register admin if login fails
-                    const data = await apiCall('/auth/register', 'POST', { name: 'Admin', phone: 'admin', password: 'admin', role: 'admin' });
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    localStorage.setItem('role', data.user.role);
-                    window.location.href = 'admin.html';
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        });
-    </script>
+<div id="error-msg" class="error-msg"></div>
+
+<form id="auth-form">
+
+<div class="form-group" id="name-group" style="display:none;">
+<label for="name">Full Name</label>
+<input type="text" id="name" class="form-control" placeholder="Enter your name">
+</div>
+
+<div class="form-group">
+<label for="phone">Phone Number</label>
+<input type="text" id="phone" class="form-control" required placeholder="Enter your phone number">
+</div>
+
+<div class="form-group">
+<label for="password">Password</label>
+<input type="password" id="password" class="form-control" required placeholder="Enter your password">
+</div>
+
+<button type="submit" class="btn btn-primary" style="width:100%">Submit</button>
+
+</form>
+
+<div class="switch-auth">
+<span id="auth-toggle-text">
+Don't have an account? <a onclick="toggleAuthMode()">Register</a>
+</span>
+</div>
+
+<div style="margin-top:2rem;padding-top:1rem;border-top:1px solid #ddd;text-align:center;font-size:0.9rem;">
+<p>Or log in as <a href="#" id="demo-admin">Demo Admin</a></p>
+</div>
+
+</div>
+</div>
+
+
+<script>
+
+let isLogin = true;
+
+function toggleAuthMode(){
+
+isLogin=!isLogin;
+
+document.getElementById('auth-title').innerText = isLogin ? 'Login' : 'Register';
+
+document.getElementById('name-group').style.display = isLogin ? 'none':'block';
+
+document.getElementById('auth-toggle-text').innerHTML =
+isLogin
+? `Don't have an account? <a onclick="toggleAuthMode()">Register</a>`
+: `Already have an account? <a onclick="toggleAuthMode()">Login</a>`;
+
+document.getElementById('error-msg').style.display='none';
+
+}
+
+
+async function apiCall(endpoint,method,body){
+
+const response = await fetch(`/api${endpoint}`,{
+method,
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify(body)
+});
+
+const text = await response.text();
+
+let data;
+
+try{
+data = JSON.parse(text);
+}catch{
+throw new Error(text);
+}
+
+if(!response.ok){
+throw new Error(data.message || "Server Error");
+}
+
+return data;
+
+}
+
+
+document.getElementById('auth-form').addEventListener('submit',async(e)=>{
+
+e.preventDefault();
+
+const phone=document.getElementById('phone').value;
+const password=document.getElementById('password').value;
+const name=document.getElementById('name').value;
+
+const endpoint = isLogin ? '/auth/login' : '/auth/register';
+
+const body = isLogin
+? {phone,password}
+: {name,phone,password,role:'farmer'};
+
+try{
+
+const data = await apiCall(endpoint,'POST',body);
+
+localStorage.setItem('token',data.token);
+localStorage.setItem('user',JSON.stringify(data.user));
+localStorage.setItem('role',data.user.role);
+
+window.location.href =
+data.user.role === 'admin'
+? 'admin.html'
+: 'dashboard.html';
+
+}catch(err){
+
+const el=document.getElementById('error-msg');
+
+el.textContent = err.message;
+
+el.style.display='block';
+
+}
+
+});
+
+
+document.getElementById('demo-admin').addEventListener('click',async(e)=>{
+
+e.preventDefault();
+
+try{
+
+try{
+
+const data = await apiCall('/auth/login','POST',{phone:'admin',password:'admin'});
+
+localStorage.setItem('token',data.token);
+localStorage.setItem('user',JSON.stringify(data.user));
+localStorage.setItem('role',data.user.role);
+
+window.location.href='admin.html';
+
+}catch{
+
+const data = await apiCall('/auth/register','POST',{name:'Admin',phone:'admin',password:'admin',role:'admin'});
+
+localStorage.setItem('token',data.token);
+localStorage.setItem('user',JSON.stringify(data.user));
+localStorage.setItem('role',data.user.role);
+
+window.location.href='admin.html';
+
+}
+
+}catch(err){
+
+console.error(err);
+
+}
+
+});
+
+</script>
+
 </body>
 </html>
