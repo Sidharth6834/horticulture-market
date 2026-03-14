@@ -4,14 +4,25 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// Register
+// ---------------- REGISTER ----------------
 router.post('/register', async (req, res) => {
     try {
         const { name, phone, password, role, location } = req.body;
-        
+
+        if (!name || !phone || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Name, phone and password are required"
+            });
+        }
+
         let user = await User.findOne({ phone });
+
         if (user) {
-            return res.status(400).json({ message: 'User already exists' });
+            return res.status(400).json({
+                success: false,
+                message: "User already exists"
+            });
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -21,46 +32,104 @@ router.post('/register', async (req, res) => {
             name,
             phone,
             password: hashedPassword,
-            role: role || 'farmer',
+            role: role || "farmer",
             location
         });
 
         await user.save();
 
-        const payload = { user: { id: user.id, role: user.role } };
-        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 360000 }, (err, token) => {
-            if (err) throw err;
-            res.json({ token, user: { id: user.id, name: user.name, role: user.role } });
+        const payload = {
+            user: {
+                id: user.id,
+                role: user.role
+            }
+        };
+
+        const token = jwt.sign(
+            payload,
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" }
+        );
+
+        res.json({
+            success: true,
+            token,
+            user: {
+                id: user.id,
+                name: user.name,
+                role: user.role
+            }
         });
+
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
     }
 });
 
-// Login
+
+// ---------------- LOGIN ----------------
 router.post('/login', async (req, res) => {
     try {
         const { phone, password } = req.body;
 
+        if (!phone || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Phone and password are required"
+            });
+        }
+
         const user = await User.findOne({ phone });
+
         if (!user) {
-            return res.status(400).json({ message: 'Invalid Credentials' });
+            return res.status(400).json({
+                success: false,
+                message: "Invalid credentials"
+            });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
+
         if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid Credentials' });
+            return res.status(400).json({
+                success: false,
+                message: "Invalid credentials"
+            });
         }
 
-        const payload = { user: { id: user.id, role: user.role } };
-        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 360000 }, (err, token) => {
-            if (err) throw err;
-            res.json({ token, user: { id: user.id, name: user.name, role: user.role } });
+        const payload = {
+            user: {
+                id: user.id,
+                role: user.role
+            }
+        };
+
+        const token = jwt.sign(
+            payload,
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" }
+        );
+
+        res.json({
+            success: true,
+            token,
+            user: {
+                id: user.id,
+                name: user.name,
+                role: user.role
+            }
         });
+
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
     }
 });
 
